@@ -2,6 +2,19 @@ name: ssh
 version: ##VERSION##
 description: |-
   DevPod on SSH
+optionGroups:
+  - options:
+      - AGENT_PATH
+      - INACTIVITY_TIMEOUT
+      - INJECT_DOCKER_CREDENTIALS
+      - INJECT_GIT_CREDENTIALS
+    name: "Agent options"
+    defaultVisible: false
+  - options:
+      - PORT
+      - EXTRA_FLAGS
+    name: "SSH options"
+    defaultVisible: true
 options:
   INACTIVITY_TIMEOUT:
     description: "If defined, will automatically stop the container after the inactivity period. Example: 10m"
@@ -28,7 +41,7 @@ agent:
   injectDockerCredentials: ${INJECT_DOCKER_CREDENTIALS}
   path: ${AGENT_PATH}
 exec:
-  validate: |-
+  init: |-
     OUTPUT=$(ssh -oStrictHostKeyChecking=no \
                  -p ${PORT} \
                  "${EXTRA_FLAGS}" \
