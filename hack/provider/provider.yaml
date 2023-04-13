@@ -2,6 +2,7 @@ name: ssh
 version: ##VERSION##
 description: |-
   DevPod on SSH
+icon: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRd5m6p7NQAaWtXgiKhejkAG_nzUiE1BEu4Fw&usqp=CAU
 optionGroups:
   - options:
       - AGENT_PATH
