@@ -45,7 +45,7 @@ exec:
   init: |-
     OUTPUT=$(ssh -oStrictHostKeyChecking=no \
                  -p ${PORT} \
-                 "${EXTRA_FLAGS}" \
+                 ${EXTRA_FLAGS} \
                  "${HOST}" \
                  'sh -c "echo DevPodTest"')
 
