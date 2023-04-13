@@ -2,8 +2,13 @@ name: ssh
 version: ##VERSION##
 description: |-
   DevPod on SSH
-icon: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRd5m6p7NQAaWtXgiKhejkAG_nzUiE1BEu4Fw&usqp=CAU
+icon: https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/GNOME_Terminal_icon_2019.svg/1024px-GNOME_Terminal_icon_2019.svg.png
 optionGroups:
+  - options:
+      - PORT
+      - EXTRA_FLAGS
+    name: "SSH options"
+    defaultVisible: false
   - options:
       - AGENT_PATH
       - INACTIVITY_TIMEOUT
@@ -11,11 +16,6 @@ optionGroups:
       - INJECT_GIT_CREDENTIALS
     name: "Agent options"
     defaultVisible: false
-  - options:
-      - PORT
-      - EXTRA_FLAGS
-    name: "SSH options"
-    defaultVisible: true
 options:
   INACTIVITY_TIMEOUT:
     description: "If defined, will automatically stop the container after the inactivity period. Example: 10m"
