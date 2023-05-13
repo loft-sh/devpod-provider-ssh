@@ -2,7 +2,7 @@ name: ssh
 version: ##VERSION##
 description: |-
   DevPod on SSH
-icon: https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/GNOME_Terminal_icon_2019.svg/1024px-GNOME_Terminal_icon_2019.svg.png
+icon: https://devpod.sh/assets/ssh.svg
 optionGroups:
   - options:
       - PORT
