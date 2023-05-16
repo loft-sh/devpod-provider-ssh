@@ -30,7 +30,7 @@ options:
     default: "true"
   HOST:
     required: true
-    description: 'The SSH Host to connect to. Example: my-user@my-domain.com'
+    description: "The SSH Host to connect to. Example: my-user@my-domain.com"
   PORT:
     description: "The SSH Port to use. Defaults to 22"
     default: "22"
@@ -60,6 +60,6 @@ exec:
   command: |-
     ssh -oStrictHostKeyChecking=no \
         -p ${PORT} \
-        "${EXTRA_FLAGS}" \
+        ${EXTRA_FLAGS} \
         "${HOST}" \
         "${COMMAND}"
