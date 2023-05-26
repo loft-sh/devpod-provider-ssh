@@ -42,18 +42,17 @@ agent:
   injectDockerCredentials: ${INJECT_DOCKER_CREDENTIALS}
   path: ${AGENT_PATH}
 exec:
-  init: |-
-    OUTPUT=$(ssh -oStrictHostKeyChecking=no \
+  init: |
+    ssh -oStrictHostKeyChecking=no \
                  -p ${PORT} \
                  ${EXTRA_FLAGS} \
-                 "${HOST}" \
-                 'sh -c "echo DevPodTest"')
+                 "${HOST}" 
 
-    if [ "$OUTPUT" != "DevPodTest" ]; then
-      >&2 echo "Unexpected ssh output."
+    if [ $? != 0 ]; then
+      >&2 echo "Unexpected non-zero ssh exit code"
       >&2 echo "Please make sure you have configured the correct SSH host"
       >&2 echo "and the following command can be executed on your system:"
-      >&2 echo ssh -oStrictHostKeyChecking=no -p "${PORT}" "${HOST}" 'sh -c "echo DevPodTest"'
+      >&2 echo ssh -oStrictHostKeyChecking=no -p "${PORT}" "${HOST}"
       exit 1
     fi
 
