@@ -10,6 +10,7 @@ optionGroups:
     name: "SSH options"
     defaultVisible: false
   - options:
+      - DOCKER_PATH
       - AGENT_PATH
       - INACTIVITY_TIMEOUT
       - INJECT_DOCKER_CREDENTIALS
@@ -19,9 +20,12 @@ optionGroups:
 options:
   INACTIVITY_TIMEOUT:
     description: "If defined, will automatically stop the container after the inactivity period. Example: 10m"
+  DOCKER_PATH:
+    description: The path where to find the docker binary.
+    default: docker
   AGENT_PATH:
     description: The path where to inject the DevPod agent to.
-    default: /opt/devpod/agent
+    default: /tmp/devpod/agent
   INJECT_GIT_CREDENTIALS:
     description: "If DevPod should inject git credentials into the remote host."
     default: "true"
@@ -41,12 +45,15 @@ agent:
   injectGitCredentials: ${INJECT_GIT_CREDENTIALS}
   injectDockerCredentials: ${INJECT_DOCKER_CREDENTIALS}
   path: ${AGENT_PATH}
+  docker:
+    path: ${DOCKER_PATH}
+    install: false
 exec:
   init: |
     ssh -oStrictHostKeyChecking=no \
                  -p ${PORT} \
                  ${EXTRA_FLAGS} \
-                 "${HOST}" 
+                 "${HOST}"
 
     if [ $? != 0 ]; then
       >&2 echo "Unexpected non-zero ssh exit code"
