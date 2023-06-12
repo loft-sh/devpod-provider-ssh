@@ -53,7 +53,8 @@ exec:
     ssh -oStrictHostKeyChecking=no \
                  -p ${PORT} \
                  ${EXTRA_FLAGS} \
-                 "${HOST}"
+                 "${HOST}" \
+                 echo "Successfully initialized connection to ${HOST}"
 
     if [ $? != 0 ]; then
       >&2 echo "Unexpected non-zero ssh exit code"
