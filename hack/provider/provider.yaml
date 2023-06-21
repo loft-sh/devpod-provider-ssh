@@ -54,7 +54,13 @@ exec:
                  -p ${PORT} \
                  ${EXTRA_FLAGS} \
                  "${HOST}" \
-                 echo "Successfully initialized connection to ${HOST}"
+                 sh -c "\"if [ \$(id -ru) -eq 0 ]; then exit 0; fi; \
+                        if (! mkdir -p ${AGENT_PATH} || [ ! -w ${AGENT_PATH} ]) && ! sudo -nl >/dev/null; then \
+                          echo $AGENT_PATH is not writable, passwordless sudo or root user required; exit 1; \
+                          fi; \
+                        if ! command -v ${DOCKER_PATH} >/dev/null && ! sudo -nl >/dev/null; then \
+                          echo $DOCKER_PATH not found, passwordless sudo or root user required; exit 1; \
+                        fi "\"
 
     if [ $? != 0 ]; then
       >&2 echo "Unexpected non-zero ssh exit code"
