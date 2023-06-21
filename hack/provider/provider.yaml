@@ -55,7 +55,7 @@ exec:
                  ${EXTRA_FLAGS} \
                  "${HOST}" \
                  sh -c "\"if [ \$(id -ru) -eq 0 ]; then exit 0; fi; \
-                        if (! mkdir -p ${AGENT_PATH} || [ ! -w ${AGENT_PATH} ]) && ! sudo -nl >/dev/null; then \
+                        if (! mkdir -p \$(dirname ${AGENT_PATH}) || [ ! -w \$(dirname ${AGENT_PATH}) ]) && ! sudo -nl >/dev/null; then \
                           echo $AGENT_PATH is not writable, passwordless sudo or root user required; exit 1; \
                           fi; \
                         if ! command -v ${DOCKER_PATH} >/dev/null && ! sudo -nl >/dev/null; then \
