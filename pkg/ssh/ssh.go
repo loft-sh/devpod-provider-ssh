@@ -2,17 +2,12 @@ package ssh
 
 import (
 	"bytes"
-	"context"
 	"fmt"
 	"io"
 	"os"
-	"os/user"
+	"os/exec"
 	"path"
-	"path/filepath"
 	"strings"
-
-	devpodssh "github.com/loft-sh/devpod/pkg/ssh"
-	"github.com/pkg/errors"
 
 	"github.com/loft-sh/devpod-provider-ssh/pkg/options"
 	"github.com/loft-sh/devpod/pkg/log"
@@ -56,43 +51,22 @@ func getSSHCommand(provider *SSHProvider) []string {
 	return result
 }
 
-func execSSHCommand(ctx context.Context, provider *SSHProvider, command string, output io.Writer) error {
-	currentUser, err := user.Current()
-	if err != nil {
-		return err
-	}
+func execSSHCommand(provider *SSHProvider, command string, output io.Writer) error {
+	commandToRun := getSSHCommand(provider)
+	commandToRun = append(commandToRun, command)
 
-	user := currentUser.Username
-	address := provider.Config.Host
+	cmd := exec.Command("ssh", commandToRun...)
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = output
+	cmd.Stderr = os.Stderr
 
-	if strings.Contains(provider.Config.Host, "@") {
-		user = strings.Split(provider.Config.Host, "@")[0]
-		address = strings.Split(provider.Config.Host, "@")[1]
-	}
-
-	if strings.HasPrefix(provider.Config.PrivateKeyPath, "~/") {
-		provider.Config.PrivateKeyPath = filepath.Join(currentUser.HomeDir, provider.Config.PrivateKeyPath[2:])
-	}
-
-	privateKey, err := os.ReadFile(provider.Config.PrivateKeyPath)
-	if err != nil {
-		return errors.Wrap(err, "read private ssh key")
-	}
-
-	sshClient, err := devpodssh.NewSSHClient(user, address+":"+provider.Config.Port, privateKey)
-	if err != nil {
-		return errors.Wrap(err, "create ssh client")
-	}
-	defer sshClient.Close()
-
-	// run command
-	return devpodssh.Run(ctx, sshClient, command, os.Stdin, output, os.Stderr)
+	return cmd.Run()
 }
 
-func Init(ctx context.Context, provider *SSHProvider) error {
+func Init(provider *SSHProvider) error {
 	out := new(bytes.Buffer)
 	// check that we can do outputs
-	err := execSSHCommand(ctx, provider, "echo Devpod Test", out)
+	err := execSSHCommand(provider, "echo Devpod Test", out)
 	if err != nil {
 		return returnSSHError(provider, "echo Devpod Test")
 	}
@@ -101,7 +75,7 @@ func Init(ctx context.Context, provider *SSHProvider) error {
 	}
 
 	// If we're root, we won't have problems
-	err = execSSHCommand(ctx, provider, "id -ru", out)
+	err = execSSHCommand(provider, "id -ru", out)
 	if err != nil {
 		return returnSSHError(provider, "id -ru")
 	}
@@ -111,19 +85,19 @@ func Init(ctx context.Context, provider *SSHProvider) error {
 
 	// check that we have access to AGENT_PATH
 	agentDir := path.Dir(provider.Config.AgentPath)
-	err1 := execSSHCommand(ctx, provider, "mkdir -p "+agentDir, out)
-	err2 := execSSHCommand(ctx, provider, "test -w "+agentDir, out)
+	err1 := execSSHCommand(provider, "mkdir -p "+agentDir, out)
+	err2 := execSSHCommand(provider, "test -w "+agentDir, out)
 	if err1 != nil || err2 != nil {
-		err = execSSHCommand(ctx, provider, "sudo -nl", out)
+		err = execSSHCommand(provider, "sudo -nl", out)
 		if err != nil {
 			return fmt.Errorf(agentDir + " is not writable, passwordless sudo or root user required")
 		}
 	}
 
 	// check that we have access to DOCKER_PATH
-	err = execSSHCommand(ctx, provider, provider.Config.DockerPath+" ps", out)
+	err = execSSHCommand(provider, provider.Config.DockerPath+" ps", out)
 	if err != nil {
-		err = execSSHCommand(ctx, provider, "sudo -nl", out)
+		err = execSSHCommand(provider, "sudo -nl", out)
 		if err != nil {
 			return fmt.Errorf(provider.Config.DockerPath + " not found, passwordless sudo or root user required")
 		}
@@ -132,6 +106,6 @@ func Init(ctx context.Context, provider *SSHProvider) error {
 	return nil
 }
 
-func Command(ctx context.Context, provider *SSHProvider, command string) error {
-	return execSSHCommand(ctx, provider, command, os.Stdout)
+func Command(provider *SSHProvider, command string) error {
+	return execSSHCommand(provider, command, os.Stdout)
 }

@@ -47,5 +47,5 @@ func (cmd *CommandCmd) Run(
 		return fmt.Errorf("command environment variable is missing")
 	}
 
-	return ssh.Command(ctx, providerSSH, command)
+	return ssh.Command(providerSSH, command)
 }

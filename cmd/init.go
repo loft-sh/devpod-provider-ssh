@@ -40,5 +40,5 @@ func (cmd *InitCmd) Run(
 	providerSSH *ssh.SSHProvider,
 	logs log.Logger,
 ) error {
-	return ssh.Init(ctx, providerSSH)
+	return ssh.Init(providerSSH)
 }
