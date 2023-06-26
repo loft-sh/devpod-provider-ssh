@@ -11,13 +11,11 @@ var (
 	HOST             = "HOST"
 	PORT             = "PORT"
 	EXTRA_FLAGS      = "EXTRA_FLAGS"
-	PRIVATE_KEY_PATH = "PRIVATE_KEY_PATH"
 )
 
 type Options struct {
 	DockerPath     string
 	AgentPath      string
-	PrivateKeyPath string
 	User           string
 	Host           string
 	Port           string
@@ -30,7 +28,6 @@ func ConfigFromEnv() (Options, error) {
 		AgentPath:      os.Getenv(AGENT_PATH),
 		Host:           os.Getenv(HOST),
 		Port:           os.Getenv(PORT),
-		PrivateKeyPath: os.Getenv(PRIVATE_KEY_PATH),
 		ExtraFlags:     os.Getenv(EXTRA_FLAGS),
 	}, nil
 }
@@ -39,11 +36,6 @@ func FromEnv() (*Options, error) {
 	retOptions := &Options{}
 
 	var err error
-
-	retOptions.PrivateKeyPath, err = fromEnvOrError(PRIVATE_KEY_PATH)
-	if err != nil {
-		return nil, err
-	}
 
 	retOptions.DockerPath, err = fromEnvOrError(DOCKER_PATH)
 	if err != nil {

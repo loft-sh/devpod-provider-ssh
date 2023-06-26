@@ -26,9 +26,6 @@ options:
   AGENT_PATH:
     description: The path where to inject the DevPod agent to.
     default: /tmp/devpod/agent
-  PRIVATE_KEY_PATH:
-    description: The path where to find the ssh private key.
-    default: ~/.ssh/id_rsa
   INJECT_GIT_CREDENTIALS:
     description: "If DevPod should inject git credentials into the remote host."
     default: "true"

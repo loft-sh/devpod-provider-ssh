@@ -44,7 +44,7 @@ func getSSHCommand(provider *SSHProvider) []string {
 		"-p", provider.Config.Port}
 
 	if provider.Config.ExtraFlags != "" {
-		result = append(result, provider.Config.ExtraFlags)
+		result = append(result, strings.Split(provider.Config.ExtraFlags, " ")...)
 	}
 
 	result = append(result, provider.Config.Host)
