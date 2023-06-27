@@ -48,31 +48,28 @@ agent:
   docker:
     path: ${DOCKER_PATH}
     install: false
+binaries:
+  SSH_PROVIDER:
+    - os: linux
+      arch: amd64
+      path: https://github.com/loft-sh/devpod-provider-ssh/releases/download/##VERSION##/devpod-provider-ssh-linux-amd64
+      checksum: ##CHECKSUM_LINUX_AMD64##
+    - os: linux
+      arch: arm64
+      path: https://github.com/loft-sh/devpod-provider-ssh/releases/download/##VERSION##/devpod-provider-ssh-linux-arm64
+      checksum: ##CHECKSUM_LINUX_ARM64##
+    - os: darwin
+      arch: amd64
+      path: https://github.com/loft-sh/devpod-provider-ssh/releases/download/##VERSION##/devpod-provider-ssh-darwin-amd64
+      checksum: ##CHECKSUM_DARWIN_AMD64##
+    - os: darwin
+      arch: arm64
+      path: https://github.com/loft-sh/devpod-provider-ssh/releases/download/##VERSION##/devpod-provider-ssh-darwin-arm64
+      checksum: ##CHECKSUM_DARWIN_ARM64##
+    - os: windows
+      arch: amd64
+      path: https://github.com/loft-sh/devpod-provider-ssh/releases/download/##VERSION##/devpod-provider-ssh-windows-amd64.exe
+      checksum: ##CHECKSUM_WINDOWS_AMD64##
 exec:
-  init: |
-    ssh -oStrictHostKeyChecking=no \
-                 -p ${PORT} \
-                 ${EXTRA_FLAGS} \
-                 "${HOST}" \
-                 sh -c "\"if [ \$(id -ru) -eq 0 ]; then exit 0; fi; \
-                        if (! mkdir -p \$(dirname ${AGENT_PATH}) || [ ! -w \$(dirname ${AGENT_PATH}) ]) && ! sudo -nl >/dev/null; then \
-                          echo $AGENT_PATH is not writable, passwordless sudo or root user required; exit 1; \
-                          fi; \
-                        if ! command -v ${DOCKER_PATH} >/dev/null && ! sudo -nl >/dev/null; then \
-                          echo $DOCKER_PATH not found, passwordless sudo or root user required; exit 1; \
-                        fi "\"
-
-    if [ $? != 0 ]; then
-      >&2 echo "Unexpected non-zero ssh exit code"
-      >&2 echo "Please make sure you have configured the correct SSH host"
-      >&2 echo "and the following command can be executed on your system:"
-      >&2 echo ssh -oStrictHostKeyChecking=no -p "${PORT}" "${HOST}"
-      exit 1
-    fi
-
-  command: |-
-    ssh -oStrictHostKeyChecking=no \
-        -p ${PORT} \
-        ${EXTRA_FLAGS} \
-        "${HOST}" \
-        "${COMMAND}"
+  init: ${SSH_PROVIDER} init
+  command: ${SSH_PROVIDER} command
