@@ -40,7 +40,7 @@ func returnSSHError(provider *SSHProvider, command string) error {
 }
 
 func getSSHCommand(provider *SSHProvider) []string {
-	result := []string{"-oStrictHostKeyChecking=no",
+	result := []string{"-oStrictHostKeyChecking=no", "-oBatchMode=yes",
 		"-p", provider.Config.Port}
 
 	if provider.Config.ExtraFlags != "" {

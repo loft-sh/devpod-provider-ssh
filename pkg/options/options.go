@@ -6,29 +6,29 @@ import (
 )
 
 var (
-	DOCKER_PATH      = "DOCKER_PATH"
-	AGENT_PATH       = "AGENT_PATH"
-	HOST             = "HOST"
-	PORT             = "PORT"
-	EXTRA_FLAGS      = "EXTRA_FLAGS"
+	DOCKER_PATH = "DOCKER_PATH"
+	AGENT_PATH  = "AGENT_PATH"
+	HOST        = "HOST"
+	PORT        = "PORT"
+	EXTRA_FLAGS = "EXTRA_FLAGS"
 )
 
 type Options struct {
-	DockerPath     string
-	AgentPath      string
-	User           string
-	Host           string
-	Port           string
-	ExtraFlags     string
+	DockerPath string
+	AgentPath  string
+	User       string
+	Host       string
+	Port       string
+	ExtraFlags string
 }
 
 func ConfigFromEnv() (Options, error) {
 	return Options{
-		DockerPath:     os.Getenv(DOCKER_PATH),
-		AgentPath:      os.Getenv(AGENT_PATH),
-		Host:           os.Getenv(HOST),
-		Port:           os.Getenv(PORT),
-		ExtraFlags:     os.Getenv(EXTRA_FLAGS),
+		DockerPath: os.Getenv(DOCKER_PATH),
+		AgentPath:  os.Getenv(AGENT_PATH),
+		Host:       os.Getenv(HOST),
+		Port:       os.Getenv(PORT),
+		ExtraFlags: os.Getenv(EXTRA_FLAGS),
 	}, nil
 }
 

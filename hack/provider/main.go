@@ -33,7 +33,7 @@ func main() {
 	for k, v := range checksumMap {
 		checksum, err := File(k)
 		if err != nil {
-			panic(fmt.Errorf("generate checksum for %s: %v", k, err))
+			panic(fmt.Errorf("generate checksum for %s: %w", k, err))
 		}
 
 		replaced = strings.Replace(replaced, v, checksum, -1)
