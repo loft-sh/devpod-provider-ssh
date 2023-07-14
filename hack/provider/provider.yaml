@@ -3,6 +3,7 @@ version: ##VERSION##
 description: |-
   DevPod on SSH
 icon: https://devpod.sh/assets/ssh.svg
+iconDark: https://devpod.sh/assets/ssh_dark.svg
 optionGroups:
   - options:
       - PORT
