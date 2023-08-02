@@ -40,8 +40,11 @@ func returnSSHError(provider *SSHProvider, command string) error {
 }
 
 func getSSHCommand(provider *SSHProvider) []string {
-	result := []string{"-oStrictHostKeyChecking=no", "-oBatchMode=yes",
-		"-p", provider.Config.Port}
+	result := []string{"-oStrictHostKeyChecking=no", "-oBatchMode=yes"}
+
+	if provider.Config.Port != "22" {
+		result = append(result, []string{"-p", provider.Config.Port}...)
+	}
 
 	if provider.Config.ExtraFlags != "" {
 		result = append(result, strings.Split(provider.Config.ExtraFlags, " ")...)
@@ -90,7 +93,9 @@ func Init(provider *SSHProvider) error {
 	if err1 != nil || err2 != nil {
 		err = execSSHCommand(provider, "sudo -nl", out)
 		if err != nil {
-			return fmt.Errorf(agentDir + " is not writable, passwordless sudo or root user required")
+			return fmt.Errorf(
+				agentDir + " is not writable, passwordless sudo or root user required",
+			)
 		}
 	}
 
@@ -99,7 +104,9 @@ func Init(provider *SSHProvider) error {
 	if err != nil {
 		err = execSSHCommand(provider, "sudo -nl", out)
 		if err != nil {
-			return fmt.Errorf(provider.Config.DockerPath + " not found, passwordless sudo or root user required")
+			return fmt.Errorf(
+				provider.Config.DockerPath + " not found, passwordless sudo or root user required",
+			)
 		}
 	}
 
