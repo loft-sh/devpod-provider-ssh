@@ -47,6 +47,11 @@ func FromEnv() (*Options, error) {
 		return nil, err
 	}
 
+	retOptions.ExtraFlags, err = fromEnvOrError(EXTRA_FLAGS)
+	if err != nil {
+		return nil, err
+	}
+
 	retOptions.Host, err = fromEnvOrError(HOST)
 	if err != nil {
 		return nil, err
