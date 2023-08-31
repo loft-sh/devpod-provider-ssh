@@ -36,7 +36,7 @@ func NewProvider(logs log.Logger) (*SSHProvider, error) {
 
 func returnSSHError(provider *SSHProvider, command string) error {
 	sshError := "Please make sure you have configured the correct SSH host\nand the following command can be executed on your system:\n"
-	return fmt.Errorf(sshError + "ssh" + strings.Join(getSSHCommand(provider), " ") + " " + command)
+	return fmt.Errorf(sshError + "ssh " + strings.Join(getSSHCommand(provider), " ") + " " + command)
 }
 
 func getSSHCommand(provider *SSHProvider) []string {
