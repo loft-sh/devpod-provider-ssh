@@ -9,6 +9,7 @@ import (
 	"path"
 	"strings"
 
+	"github.com/kballard/go-shellquote"
 	"github.com/loft-sh/devpod-provider-ssh/pkg/options"
 	"github.com/loft-sh/devpod/pkg/log"
 )
@@ -47,7 +48,10 @@ func getSSHCommand(provider *SSHProvider) []string {
 	}
 
 	if provider.Config.ExtraFlags != "" {
-		result = append(result, strings.Split(provider.Config.ExtraFlags, " ")...)
+		flags, err := shellquote.Split(provider.Config.ExtraFlags)
+		if err == nil {
+			result = append(result, flags...)
+		}
 	}
 
 	result = append(result, provider.Config.Host)
