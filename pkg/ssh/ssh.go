@@ -9,6 +9,7 @@ import (
 	"path"
 	"strings"
 
+	"github.com/kballard/go-shellquote"
 	"github.com/loft-sh/devpod-provider-ssh/pkg/options"
 	"github.com/loft-sh/devpod/pkg/log"
 )
@@ -36,10 +37,16 @@ func NewProvider(logs log.Logger) (*SSHProvider, error) {
 
 func returnSSHError(provider *SSHProvider, command string) error {
 	sshError := "Please make sure you have configured the correct SSH host\nand the following command can be executed on your system:\n"
-	return fmt.Errorf(sshError + "ssh" + strings.Join(getSSHCommand(provider), " ") + " " + command)
+
+	sshcmd, err := getSSHCommand(provider)
+	if err != nil {
+		return err
+	}
+
+	return fmt.Errorf(sshError + "ssh " + strings.Join(sshcmd, " ") + " " + command)
 }
 
-func getSSHCommand(provider *SSHProvider) []string {
+func getSSHCommand(provider *SSHProvider) ([]string, error) {
 	result := []string{"-oStrictHostKeyChecking=no", "-oBatchMode=yes"}
 
 	if provider.Config.Port != "22" {
@@ -47,15 +54,24 @@ func getSSHCommand(provider *SSHProvider) []string {
 	}
 
 	if provider.Config.ExtraFlags != "" {
-		result = append(result, strings.Split(provider.Config.ExtraFlags, " ")...)
+		flags, err := shellquote.Split(provider.Config.ExtraFlags)
+		if err != nil {
+			return nil, fmt.Errorf("error managing EXTRA_ARGS, %v", err)
+		}
+
+		result = append(result, flags...)
 	}
 
 	result = append(result, provider.Config.Host)
-	return result
+	return result, nil
 }
 
 func execSSHCommand(provider *SSHProvider, command string, output io.Writer) error {
-	commandToRun := getSSHCommand(provider)
+	commandToRun, err := getSSHCommand(provider)
+	if err != nil {
+		return err
+	}
+
 	commandToRun = append(commandToRun, command)
 
 	cmd := exec.Command("ssh", commandToRun...)

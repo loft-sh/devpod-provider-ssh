@@ -3,6 +3,7 @@ module github.com/loft-sh/devpod-provider-ssh
 go 1.20
 
 require (
+	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51
 	github.com/loft-sh/devpod v0.1.10
 	github.com/onsi/ginkgo/v2 v2.9.1
 	github.com/onsi/gomega v1.27.4
@@ -43,7 +44,6 @@ require (
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/k0kubun/go-ansi v0.0.0-20180517002512-3bf9e2903213 // indirect
-	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
 	github.com/klauspost/compress v1.15.12 // indirect
 	github.com/loft-sh/utils v0.0.16 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect

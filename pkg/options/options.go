@@ -22,16 +22,6 @@ type Options struct {
 	ExtraFlags string
 }
 
-func ConfigFromEnv() (Options, error) {
-	return Options{
-		DockerPath: os.Getenv(DOCKER_PATH),
-		AgentPath:  os.Getenv(AGENT_PATH),
-		Host:       os.Getenv(HOST),
-		Port:       os.Getenv(PORT),
-		ExtraFlags: os.Getenv(EXTRA_FLAGS),
-	}, nil
-}
-
 func FromEnv() (*Options, error) {
 	retOptions := &Options{}
 
@@ -46,6 +36,8 @@ func FromEnv() (*Options, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	retOptions.ExtraFlags = os.Getenv(EXTRA_FLAGS)
 
 	retOptions.Host, err = fromEnvOrError(HOST)
 	if err != nil {
