@@ -94,7 +94,7 @@ func Init(provider *SSHProvider) error {
 	}
 
 	// We only support running on Linux ssh servers
-	err := execSSHCommand(provider, "uname", out)
+	err = execSSHCommand(provider, "uname", out)
 	if err != nil {
 		return returnSSHError(provider, "uname")
 	}
