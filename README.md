@@ -11,4 +11,10 @@ To add this SSH provider from the CLI, use the `provider add` command. For examp
 devpod provider add https://github.com/loft-sh/devpod-provider-ssh/releases/download/$CURRENT_VERSION/provider.yaml
 ```
 
+## Compatibility
+
+We only support Linux machine as remote hosts.
+
+# Extra
+
 For more detail, see the [DevPod Documentation](https://devpod.sh/docs/managing-providers/what-are-providers).

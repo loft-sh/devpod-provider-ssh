@@ -93,6 +93,15 @@ func Init(provider *SSHProvider) error {
 		return fmt.Errorf("error: ssh output mismatch")
 	}
 
+	// We only support running on Linux ssh servers
+	err := execSSHCommand(provider, "uname", out)
+	if err != nil {
+		return returnSSHError(provider, "uname")
+	}
+	if out.String() != "Linux\n" {
+		return fmt.Errorf("error: SSH provider only works on Linux servers")
+	}
+
 	// If we're root, we won't have problems
 	err = execSSHCommand(provider, "id -ru", out)
 	if err != nil {
