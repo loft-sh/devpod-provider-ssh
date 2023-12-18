@@ -8,7 +8,7 @@ require (
 	github.com/onsi/ginkgo/v2 v2.9.1
 	github.com/onsi/gomega v1.27.4
 	github.com/spf13/cobra v1.7.0
-	golang.org/x/crypto v0.14.0
+	golang.org/x/crypto v0.17.0
 )
 
 require (
@@ -72,9 +72,9 @@ require (
 	golang.org/x/mod v0.9.0 // indirect
 	golang.org/x/net v0.17.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
-	golang.org/x/sys v0.13.0 // indirect
-	golang.org/x/term v0.13.0 // indirect
-	golang.org/x/text v0.13.0 // indirect
+	golang.org/x/sys v0.15.0 // indirect
+	golang.org/x/term v0.15.0 // indirect
+	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/tools v0.7.0 // indirect
 	google.golang.org/genproto v0.0.0-20230110181048-76db0878b65f // indirect
 	google.golang.org/grpc v1.53.0 // indirect
