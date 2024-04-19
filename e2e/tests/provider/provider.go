@@ -1,6 +1,7 @@
 package provider
 
 import (
+	"bytes"
 	"os"
 	"os/exec"
 
@@ -10,7 +11,6 @@ import (
 )
 
 var _ = ginkgo.Describe("[e2e]: devpod provider ssh test suite", ginkgo.Ordered, func() {
-
 	ginkgo.Context("testing /kubeletinfo endpoint", ginkgo.Label("e2e"), ginkgo.Ordered, func() {
 		ginkgo.It("should fail the init", func() {
 			cmd := exec.Command("../release/devpod-provider-ssh-linux-amd64", "init")
@@ -98,7 +98,7 @@ echo line3`,
 		})
 
 		ginkgo.It("should run a failing command and fail", func() {
-			controlOutput := []byte("bash: line 1: not-a-command: command not found\n")
+			controlOutput := []byte("bash: line 1: not-a-command: command not found")
 
 			cmd := exec.Command("../release/devpod-provider-ssh-linux-amd64", "command")
 			cmd.Env = append(cmd.Environ(), []string{
@@ -110,6 +110,8 @@ echo line3`,
 			}...)
 			output, err := cmd.CombinedOutput()
 			framework.ExpectError(err)
+
+			output = bytes.TrimSpace(output)
 
 			gomega.Expect(output).To(gomega.Equal(controlOutput))
 		})
