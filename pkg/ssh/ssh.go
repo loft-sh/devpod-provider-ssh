@@ -121,7 +121,7 @@ func copyAndExecSSHCommand(provider *SSHProvider, command string, output io.Writ
 }
 
 func copyCommandToRemote(provider *SSHProvider, command string) (string, error) {
-	script, err := os.CreateTemp("/tmp/", "devpod-command-*")
+	script, err := os.CreateTemp("", "devpod-command-*")
 	if err != nil {
 		return "", err
 	}
