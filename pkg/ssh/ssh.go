@@ -74,12 +74,94 @@ func execSSHCommand(provider *SSHProvider, command string, output io.Writer) err
 
 	commandToRun = append(commandToRun, command)
 
+	var stderrBuf bytes.Buffer
+
+	cmd := exec.Command("ssh", commandToRun...)
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = output
+	cmd.Stderr = io.Writer(&stderrBuf)
+
+	err = cmd.Run()
+	if err != nil {
+		provider.Log.Error(stderrBuf.String())
+		return err
+	}
+
+	// A non-POSIX shell has been detected: falling back to copy and execute scripts
+	if strings.Contains(stderrBuf.String(), "fish: Unsupported") {
+		provider.Log.Warn("A non-POSIX shell has been detected: falling back to copy and execute scripts")
+
+		return copyAndExecSSHCommand(provider, command, output)
+	}
+
+	return err
+}
+
+func copyAndExecSSHCommand(provider *SSHProvider, command string, output io.Writer) error {
+	commandToRun, err := getSSHCommand(provider)
+	if err != nil {
+		return err
+	}
+
+	script, err := copyCommandToRemote(provider, command)
+	if err != nil {
+		return err
+	}
+
+	commandToRun = append(commandToRun, []string{
+		"/bin/sh", script, ";", "rm", "-f", script,
+	}...)
+
 	cmd := exec.Command("ssh", commandToRun...)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = output
 	cmd.Stderr = os.Stderr
 
 	return cmd.Run()
+}
+
+func copyCommandToRemote(provider *SSHProvider, command string) (string, error) {
+	script, err := os.CreateTemp("/tmp/", "devpod-command-*")
+	if err != nil {
+		return "", err
+	}
+	defer func() {
+		script.Close()
+		os.Remove(script.Name())
+	}()
+
+	commandToRun, err := getSCPCommand(provider, script.Name())
+	if err != nil {
+		return "", err
+	}
+
+	_, err = script.WriteString(command)
+	if err != nil {
+		return "", err
+	}
+
+	return script.Name(), exec.Command("scp", commandToRun...).Run()
+}
+
+func getSCPCommand(provider *SSHProvider, sourcefile string) ([]string, error) {
+	result := []string{"-oStrictHostKeyChecking=no", "-oBatchMode=yes"}
+
+	if provider.Config.Port != "22" {
+		result = append(result, []string{"-p", provider.Config.Port}...)
+	}
+
+	if provider.Config.ExtraFlags != "" {
+		flags, err := shellquote.Split(provider.Config.ExtraFlags)
+		if err != nil {
+			return nil, fmt.Errorf("error managing EXTRA_ARGS, %v", err)
+		}
+
+		result = append(result, flags...)
+	}
+
+	result = append(result, sourcefile)
+	result = append(result, provider.Config.Host+":"+sourcefile)
+	return result, nil
 }
 
 func Init(provider *SSHProvider) error {
