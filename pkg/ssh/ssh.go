@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"path/filepath"
 	"strings"
 
 	"github.com/kballard/go-shellquote"
@@ -159,8 +160,10 @@ func getSCPCommand(provider *SSHProvider, sourcefile string) ([]string, error) {
 		result = append(result, flags...)
 	}
 
+	destfile := "/tmp/" + filepath.Base(sourcefile)
+
 	result = append(result, sourcefile)
-	result = append(result, provider.Config.Host+":"+sourcefile)
+	result = append(result, provider.Config.Host+":"+destfile)
 	return result, nil
 }
 
