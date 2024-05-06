@@ -26,7 +26,7 @@ options:
     default: docker
   AGENT_PATH:
     description: The path where to inject the DevPod agent to.
-    default: /tmp/devpod/agent
+    command: printf "%s" "/tmp/${USER}/devpod/agent"
   INJECT_GIT_CREDENTIALS:
     description: "If DevPod should inject git credentials into the remote host."
     default: "true"
