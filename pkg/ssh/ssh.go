@@ -100,6 +100,9 @@ func execSSHCommand(provider *SSHProvider, command string, output io.Writer) err
 			return fmt.Errorf("read identifiyfile: %w", err)
 		}
 
+		if provider.Config.Port != "" {
+			port = provider.Config.Port
+		}
 		// create ssh session
 		addr := net.JoinHostPort(hostname, port)
 		client, err := ssh.NewSSHClient(user, addr, key)
