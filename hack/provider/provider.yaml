@@ -8,6 +8,7 @@ optionGroups:
   - options:
       - PORT
       - EXTRA_FLAGS
+      - USE_BUILTIN_SSH
     name: "SSH options"
     defaultVisible: false
   - options:
@@ -41,6 +42,10 @@ options:
     default: "22"
   EXTRA_FLAGS:
     description: "Extra flags to pass to the SSH command."
+  USE_BUILTIN_SSH:
+    description: "Use the builtin SSH package."
+    default: false
+    type: boolean
 agent:
   inactivityTimeout: ${INACTIVITY_TIMEOUT}
   injectGitCredentials: ${INJECT_GIT_CREDENTIALS}

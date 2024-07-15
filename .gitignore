@@ -2,3 +2,4 @@ release
 env
 devpod-provider-ssh
 e2e/bin
+.idea

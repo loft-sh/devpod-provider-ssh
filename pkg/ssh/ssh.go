@@ -10,7 +10,6 @@ import (
 	"os/exec"
 	"path"
 	"path/filepath"
-	"runtime"
 	"strings"
 	"time"
 
@@ -73,7 +72,7 @@ func getSSHCommand(provider *SSHProvider) ([]string, error) {
 }
 
 func execSSHCommand(provider *SSHProvider, command string, output io.Writer) error {
-	if runtime.GOOS == "windows" {
+	if provider.Config.UseBuiltinSSH {
 		// get ssh config for host
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 		defer cancel()
@@ -178,8 +177,8 @@ func copyCommandToRemote(provider *SSHProvider, command string) (string, error) 
 		return "", err
 	}
 	defer func() {
-		script.Close()
-		os.Remove(script.Name())
+		_ = script.Close()
+		_ = os.Remove(script.Name())
 	}()
 
 	commandToRun, err := getSCPCommand(provider, script.Name())
