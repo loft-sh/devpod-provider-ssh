@@ -6,20 +6,22 @@ import (
 )
 
 var (
-	DOCKER_PATH = "DOCKER_PATH"
-	AGENT_PATH  = "AGENT_PATH"
-	HOST        = "HOST"
-	PORT        = "PORT"
-	EXTRA_FLAGS = "EXTRA_FLAGS"
+	DOCKER_PATH     = "DOCKER_PATH"
+	AGENT_PATH      = "AGENT_PATH"
+	HOST            = "HOST"
+	PORT            = "PORT"
+	EXTRA_FLAGS     = "EXTRA_FLAGS"
+	USE_BUILTIN_SSH = "USE_BUILTIN_SSH"
 )
 
 type Options struct {
-	DockerPath string
-	AgentPath  string
-	User       string
-	Host       string
-	Port       string
-	ExtraFlags string
+	DockerPath    string
+	AgentPath     string
+	User          string
+	Host          string
+	Port          string
+	ExtraFlags    string
+	UseBuiltinSSH bool
 }
 
 func FromEnv() (*Options, error) {
@@ -48,6 +50,12 @@ func FromEnv() (*Options, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	builtinSSH, err := fromEnvOrError(USE_BUILTIN_SSH)
+	if err != nil {
+		return nil, err
+	}
+	retOptions.UseBuiltinSSH = builtinSSH == "true"
 
 	return retOptions, nil
 }

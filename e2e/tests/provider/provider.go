@@ -20,6 +20,7 @@ var _ = ginkgo.Describe("[e2e]: devpod provider ssh test suite", ginkgo.Ordered,
 				"DOCKER_PATH=docker",
 				"HOST=localhost",
 				"PORT=1234",
+				"USE_BUILTIN_SSH=false",
 			}...)
 			err := cmd.Run()
 			framework.ExpectError(err)
@@ -33,6 +34,7 @@ var _ = ginkgo.Describe("[e2e]: devpod provider ssh test suite", ginkgo.Ordered,
 				"DOCKER_PATH=docker",
 				"HOST=localhost",
 				"PORT=22",
+				"USE_BUILTIN_SSH=false",
 			}...)
 			err := cmd.Run()
 			framework.ExpectNoError(err)
@@ -46,6 +48,7 @@ var _ = ginkgo.Describe("[e2e]: devpod provider ssh test suite", ginkgo.Ordered,
 				"DOCKER_PATH=docker",
 				"HOST=localhost",
 				"PORT=22",
+				"USE_BUILTIN_SSH=false",
 			}...)
 			err := cmd.Run()
 			framework.ExpectNoError(err)
@@ -63,6 +66,7 @@ var _ = ginkgo.Describe("[e2e]: devpod provider ssh test suite", ginkgo.Ordered,
 				"DOCKER_PATH=docker",
 				"HOST=localhost",
 				"PORT=22",
+				"USE_BUILTIN_SSH=false",
 			}...)
 			output, err := cmd.Output()
 			framework.ExpectNoError(err)
@@ -90,6 +94,7 @@ echo line2
 echo line3`,
 				"HOST=localhost",
 				"PORT=22",
+				"USE_BUILTIN_SSH=false",
 			}...)
 			output, err := cmd.CombinedOutput()
 			framework.ExpectNoError(err)
@@ -107,6 +112,7 @@ echo line3`,
 				"DOCKER_PATH=docker",
 				"HOST=localhost",
 				"PORT=22",
+				"USE_BUILTIN_SSH=false",
 			}...)
 			output, err := cmd.CombinedOutput()
 			framework.ExpectError(err)
