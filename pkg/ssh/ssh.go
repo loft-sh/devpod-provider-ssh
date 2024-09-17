@@ -269,7 +269,7 @@ func Init(provider *SSHProvider) error {
 		err = execSSHCommand(provider, "sudo -nl", out)
 		if err != nil {
 			return fmt.Errorf(
-				provider.Config.DockerPath + " not found, passwordless sudo or root user required",
+				provider.Config.DockerPath + " not found, passwordless sudo or root user required. If using another user please add to the docker group",
 			)
 		}
 	}
