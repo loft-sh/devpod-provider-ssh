@@ -6,11 +6,13 @@ This repository hosts the default SSH provider configuration used in DevPod.
 
 ## Usage
 
-To add this SSH provider from the CLI, use the `provider add` command. For example:
+To add this SSH provider from the CLI, use the `provider add` command along with your remote host to deploy to. For example:
 
 ```shell
-devpod provider add ssh
+devpod provider add ssh -o HOST=user@my-domain.com
 ```
+
+Please note, the SSH host must be accessible via ssh user@my-domain.com with passwordless login and the user being either root or in the docker group.
 
 ## Compatibility
 

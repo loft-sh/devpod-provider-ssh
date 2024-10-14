@@ -48,7 +48,7 @@ func returnSSHError(provider *SSHProvider, command string) error {
 		return err
 	}
 
-	return fmt.Errorf(sshError + "ssh " + strings.Join(sshcmd, " ") + " " + command)
+	return fmt.Errorf("%s ssh %s %s", sshError, strings.Join(sshcmd, " "), command)
 }
 
 func getSSHCommand(provider *SSHProvider) ([]string, error) {
@@ -257,9 +257,7 @@ func Init(provider *SSHProvider) error {
 	if err1 != nil || err2 != nil {
 		err = execSSHCommand(provider, "sudo -nl", out)
 		if err != nil {
-			return fmt.Errorf(
-				agentDir + " is not writable, passwordless sudo or root user required",
-			)
+			return fmt.Errorf("%s is not writable, passwordless sudo or root user required", agentDir)
 		}
 	}
 
@@ -268,9 +266,7 @@ func Init(provider *SSHProvider) error {
 	if err != nil {
 		err = execSSHCommand(provider, "sudo -nl", out)
 		if err != nil {
-			return fmt.Errorf(
-				provider.Config.DockerPath + " not found, passwordless sudo or root user required",
-			)
+			return fmt.Errorf("%s not found, passwordless sudo or root user required. If using another user please add to the docker group", provider.Config.DockerPath)
 		}
 	}
 
