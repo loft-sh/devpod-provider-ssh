@@ -2,8 +2,6 @@ module github.com/loft-sh/devpod-provider-ssh
 
 go 1.21
 
-toolchain go1.23.0
-
 require (
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51
 	github.com/loft-sh/devpod v0.1.10
