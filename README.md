@@ -12,7 +12,7 @@ To add this SSH provider from the CLI, use the `provider add` command along with
 devpod provider add ssh -o HOST=user@my-domain.com
 ```
 
-Please note, the SSH host myst be accessible via ssh user@my-domain.com with passwordless login and the user being either root or in the docker group.
+Please note, the SSH host must be accessible via ssh user@my-domain.com with passwordless login and the user being either root or in the docker group.
 
 ## Compatibility
 
