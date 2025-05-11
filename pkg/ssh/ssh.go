@@ -72,6 +72,12 @@ func getSSHCommand(provider *SSHProvider) ([]string, error) {
 }
 
 func execSSHCommand(provider *SSHProvider, command string, output io.Writer) error {
+	// The SSH protocol's command is a single string which is interpreted by
+	// the remote user's default login shell. This causes problems if the
+	// remote shell is not POSIX-compliant. To get around this, we wrap the
+	// command in a call to sh -c which should always give a POSIX shell.
+	command = fmt.Sprintf("sh -c %s", shellquote.Join(command))
+
 	if provider.Config.UseBuiltinSSH {
 		// get ssh config for host
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
