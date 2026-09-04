@@ -51,6 +51,22 @@ func returnSSHError(provider *SSHProvider, command string) error {
 	return fmt.Errorf("%s ssh %s %s", sshError, strings.Join(sshcmd, " "), command)
 }
 
+// filterOutPosixFDState removes the Win32-OpenSSH parent fd-state variable
+// (<hash>_POSIX_FD_STATE) from the inner ssh environment: it is inherited from
+// an outer ssh ProxyCommand chain and makes ssh.exe use overlapped I/O on the
+// provider's synchronous pipes, breaking stdin/stdout (devpod issue #521).
+func filterOutPosixFDState(env []string) []string {
+	out := make([]string, 0, len(env))
+	for _, e := range env {
+		name, _, _ := strings.Cut(e, "=")
+		if strings.HasSuffix(name, "_POSIX_FD_STATE") {
+			continue
+		}
+		out = append(out, e)
+	}
+	return out
+}
+
 func getSSHCommand(provider *SSHProvider) ([]string, error) {
 	result := []string{"-oStrictHostKeyChecking=no", "-oBatchMode=yes"}
 
@@ -131,6 +147,7 @@ func execSSHCommand(provider *SSHProvider, command string, output io.Writer) err
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = output
 	cmd.Stderr = io.Writer(&stderrBuf)
+	cmd.Env = filterOutPosixFDState(os.Environ())
 
 	err = cmd.Run()
 	if err != nil {
@@ -167,6 +184,7 @@ func copyAndExecSSHCommand(provider *SSHProvider, command string, output io.Writ
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = output
 	cmd.Stderr = os.Stderr
+	cmd.Env = filterOutPosixFDState(os.Environ())
 
 	return cmd.Run()
 }
